@@ -32,7 +32,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer","root","p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer","username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM users WHERE username = ? AND password = ?");
             statement.setString(1, username);
@@ -80,7 +80,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer","root","p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer","username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
             statement.setString(1, username);
@@ -130,7 +130,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT music.music_id, music.title, performers.performername FROM liked JOIN music ON liked.music_id = music.music_id JOIN performers ON music.performer_id = performers.performer_id WHERE liked.user_id = ?");
             statement.setString(1, String.valueOf(userId));
@@ -162,7 +162,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT music_id, music.title, performers.performername FROM music JOIN performers ON music.performer_id = performers.performer_id WHERE genre_id = ?");
             statement.setString(1, String.valueOf(genreId));
@@ -194,7 +194,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT music_id, music.title, performers.performername FROM music JOIN performers ON music.performer_id = performers.performer_id WHERE title LIKE ? OR performername LIKE ?");
             statement.setString(1, "%" + searchString + "%");
@@ -228,7 +228,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT music.music_id, music.title, performers.performername FROM liked JOIN music ON liked.music_id = music.music_id JOIN performers ON music.performer_id = performers.performer_id WHERE title LIKE ? OR performername LIKE ?");
             statement.setString(1, "%" + searchString + "%");
@@ -262,7 +262,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
         byte[] data = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT path FROM music WHERE music_id = ?");
             statement.setString(1, musicId);
@@ -292,7 +292,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
         String result = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM liked WHERE user_id = ? AND music_id = ?");
             statement.setString(1, String.valueOf(userId));
@@ -335,7 +335,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
         String result = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM liked WHERE user_id = ? AND music_id = ?");
             statement.setString(1, String.valueOf(userId));
@@ -379,7 +379,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("INSERT INTO albums(user_id, albumname) VALUES (?, ?)");
             statement.setString(1, String.valueOf(userId));
@@ -406,7 +406,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT album_id, albumname FROM albums WHERE user_id = ?");
             statement.setString(1, String.valueOf(userId));
@@ -438,7 +438,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password"");
 
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM album_music WHERE album_id = ? AND music_id = ?");
             statement.setString(1, albumId);
@@ -483,7 +483,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT album_music.music_id, music.title, performers.performername FROM album_music INNER JOIN music ON album_music.music_id = music.music_id INNER JOIN performers ON music.performer_id = performers.performer_id WHERE album_music.album_id = ?");
             statement.setString(1,albumId);
@@ -517,7 +517,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM album_music WHERE album_id = ? AND music_id = ?");
             statement.setString(1, albumId);
@@ -563,7 +563,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "root", "p00rGe()n");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer", "username","password");
 
             PreparedStatement statement = connection.prepareStatement("DELETE FROM album_music WHERE album_id = ?");
             statement.setString(1, albumId);
