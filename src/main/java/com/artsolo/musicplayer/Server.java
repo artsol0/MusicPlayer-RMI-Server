@@ -1,5 +1,8 @@
 package com.artsolo.musicplayer;
 
+import com.artsolo.musicplayer.impls.MusicServiceImpl;
+import com.artsolo.musicplayer.services.MusicService;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

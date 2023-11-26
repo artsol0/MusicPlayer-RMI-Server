@@ -9,4 +9,10 @@ module com.artsolo.musicplayer {
 
     opens com.artsolo.musicplayer to javafx.fxml;
     exports com.artsolo.musicplayer;
+    exports com.artsolo.musicplayer.entitis;
+    opens com.artsolo.musicplayer.entitis to javafx.fxml;
+    exports com.artsolo.musicplayer.services;
+    opens com.artsolo.musicplayer.services to javafx.fxml;
+    exports com.artsolo.musicplayer.impls;
+    opens com.artsolo.musicplayer.impls to javafx.fxml;
 }
