@@ -46,7 +46,7 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
                     resultSet.close();
                     connection.close();
 
-                    return new User(resultSet.getLong("user_id"), username);
+                    return new User(resultSet.getInt("user_id"), username);
                 }
 
             } catch (SQLException e) {
@@ -93,7 +93,7 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
         return "Something went wrong. Try again latter";
     }
 
-    public boolean userIsValid(String username, String password) {
+    private boolean userIsValid(String username, String password) {
         boolean valid = false;
 
         connection = databaseManager.connect();
@@ -120,7 +120,7 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
         return valid;
     }
 
-    public boolean usernameIsTaken(String username, Connection connection) {
+    private boolean usernameIsTaken(String username, Connection connection) {
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
             statement.setString(1, username);
@@ -138,7 +138,7 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
         return false;
     }
 
-    public boolean emailIsTaken(String email, Connection connection) {
+    private boolean emailIsTaken(String email, Connection connection) {
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE email = ?");
             statement.setString(1, email);

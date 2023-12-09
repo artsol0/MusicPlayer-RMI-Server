@@ -4,15 +4,15 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    private final Long id;
+    private final int id;
     private final String username;
 
-    public User(Long id, String username) {
+    public User(int id, String username) {
         this.id = id;
         this.username = username;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 

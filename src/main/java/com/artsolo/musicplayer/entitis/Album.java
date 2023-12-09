@@ -3,15 +3,15 @@ package com.artsolo.musicplayer.entitis;
 import java.io.Serializable;
 
 public class Album implements Serializable {
-    private final Long id;
+    private final int id;
     private final String name;
 
-    public Album(Long id, String name) {
+    public Album(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 

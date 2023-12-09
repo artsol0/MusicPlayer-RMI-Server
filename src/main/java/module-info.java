@@ -15,4 +15,6 @@ module com.artsolo.musicplayer {
     opens com.artsolo.musicplayer.services to javafx.fxml;
     exports com.artsolo.musicplayer.impls;
     opens com.artsolo.musicplayer.impls to javafx.fxml;
+    exports com.artsolo.musicplayer.singletons;
+    opens com.artsolo.musicplayer.singletons to javafx.fxml;
 }

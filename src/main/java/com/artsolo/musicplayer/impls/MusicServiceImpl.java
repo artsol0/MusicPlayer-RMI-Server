@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MusicServiceImpl extends UnicastRemoteObject implements MusicService {
-    private int userId;
 
     private Connection connection;
     private final DatabaseManager databaseManager;
@@ -29,7 +28,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
     }
 
     @Override
-    public List<Music> getMusic() throws RemoteException {
+    public List<Music> getMusic(int userId) throws RemoteException {
         List<Music> musicList = new ArrayList<>();
 
         connection = databaseManager.connect();
@@ -40,7 +39,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Music music = new Music(resultSet.getLong("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
+                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
                 musicList.add(music);
             }
 
@@ -66,7 +65,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Music music = new Music(resultSet.getLong("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
+                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
                 musicList.add(music);
             }
 
@@ -94,7 +93,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Music music = new Music(resultSet.getLong("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
+                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
                 musicList.add(music);
             }
 
@@ -122,7 +121,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Music music = new Music(resultSet.getLong("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
+                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
                 musicList.add(music);
             }
 
@@ -138,14 +137,14 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
     }
 
     @Override
-    public byte[] getMusicInBytes(String musicId) throws RemoteException {
+    public byte[] getMusicInBytes(int musicId) throws RemoteException {
         byte[] data = null;
 
         connection = databaseManager.connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT path FROM music WHERE music_id = ?");
-            statement.setString(1, musicId);
+            statement.setString(1, String.valueOf(musicId));
             ResultSet resultSet = statement.executeQuery();
 
             Path path = null;
@@ -169,7 +168,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
     }
 
     @Override
-    public String addMusicToLiked(String musicId) throws RemoteException {
+    public String addMusicToLiked(int musicId, int userId) throws RemoteException {
         String result = null;
 
         connection = databaseManager.connect();
@@ -177,7 +176,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM liked WHERE user_id = ? AND music_id = ?");
             statement.setString(1, String.valueOf(userId));
-            statement.setString(2, musicId);
+            statement.setString(2, String.valueOf(musicId));
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -187,7 +186,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
                 } else {
                     statement = connection.prepareStatement("INSERT INTO liked(user_id, music_id) VALUES (?, ?)");
                     statement.setString(1, String.valueOf(userId));
-                    statement.setString(2, musicId);
+                    statement.setString(2, String.valueOf(musicId));
 
 
                     int resultOfAdding = statement.executeUpdate();
@@ -211,7 +210,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
     }
 
     @Override
-    public String removeMusicFromLiked(String musicId) throws RemoteException {
+    public String removeMusicFromLiked(int musicId, int userId) throws RemoteException {
         String result = null;
 
         connection = databaseManager.connect();
@@ -220,7 +219,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
 
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM liked WHERE user_id = ? AND music_id = ?");
             statement.setString(1, String.valueOf(userId));
-            statement.setString(2, musicId);
+            statement.setString(2, String.valueOf(musicId));
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -231,7 +230,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
                 } else {
                     statement = connection.prepareStatement("DELETE FROM liked WHERE user_id = ? AND music_id = ?");
                     statement.setString(1, String.valueOf(userId));
-                    statement.setString(2, musicId);
+                    statement.setString(2, String.valueOf(musicId));
 
                     int rowsDeleted = statement.executeUpdate();
 

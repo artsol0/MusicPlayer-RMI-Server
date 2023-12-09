@@ -15,8 +15,6 @@ import java.util.logging.Logger;
 
 public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumService {
 
-    private int userId;
-
     private Connection connection;
     private final DatabaseManager databaseManager;
     private final Logger logger = Logger.getLogger(DatabaseManager.class.getName());
@@ -27,7 +25,7 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
     }
 
     @Override
-    public boolean createNewAlbum(String newAlbumTitle) throws RemoteException {
+    public boolean createNewAlbum(int userId, String newAlbumTitle) throws RemoteException {
         boolean result = false;
 
         connection = databaseManager.connect();
@@ -51,7 +49,7 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
     }
 
     @Override
-    public List<Album> getAlbum() throws RemoteException {
+    public List<Album> getAlbum(int userId) throws RemoteException {
         List<Album> albumsList = new ArrayList<>();
 
         connection = databaseManager.connect();
@@ -63,7 +61,7 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                albumsList.add(new Album(resultSet.getLong("album_id"),resultSet.getString("albumname")));
+                albumsList.add(new Album(resultSet.getInt("album_id"),resultSet.getString("albumname")));
             }
 
             resultSet.close();
@@ -77,15 +75,15 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
     }
 
     @Override
-    public String addMusicToAlbum(String albumId, String musicId) throws RemoteException {
+    public String addMusicToAlbum(int albumId, int musicId) throws RemoteException {
         String result = null;
 
         connection = databaseManager.connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM album_music WHERE album_id = ? AND music_id = ?");
-            statement.setString(1, albumId);
-            statement.setString(2, musicId);
+            statement.setString(1, String.valueOf(albumId));
+            statement.setString(2, String.valueOf(musicId));
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -95,8 +93,8 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
                     result = "Song already in album";
                 } else {
                     statement = connection.prepareStatement("INSERT INTO album_music(album_id, music_id) VALUES (?, ?)");
-                    statement.setString(1, albumId);
-                    statement.setString(2, musicId);
+                    statement.setString(1, String.valueOf(albumId));
+                    statement.setString(2, String.valueOf(musicId));
 
                     int resultOfCreating = statement.executeUpdate();
 
@@ -119,19 +117,19 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
     }
 
     @Override
-    public List<Music> getAlbumMusic(String albumId) throws RemoteException {
+    public List<Music> getAlbumMusic(int albumId) throws RemoteException {
         List<Music>  musicList = new ArrayList<>();
 
         connection = databaseManager.connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT album_music.music_id, music.title, performers.performername FROM album_music INNER JOIN music ON album_music.music_id = music.music_id INNER JOIN performers ON music.performer_id = performers.performer_id WHERE album_music.album_id = ?");
-            statement.setString(1,albumId);
+            statement.setString(1, String.valueOf(albumId));
 
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Music music = new Music(resultSet.getLong("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
+                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
                 musicList.add(music);
             }
 
@@ -147,15 +145,15 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
     }
 
     @Override
-    public String removeMusicFromAlbum(String albumId, String musicId) throws RemoteException {
+    public String removeMusicFromAlbum(int albumId, int musicId) throws RemoteException {
         String result = null;
 
         connection = databaseManager.connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM album_music WHERE album_id = ? AND music_id = ?");
-            statement.setString(1, albumId);
-            statement.setString(2, musicId);
+            statement.setString(1, String.valueOf(albumId));
+            statement.setString(2, String.valueOf(musicId));
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -165,8 +163,8 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
                     result = "Song already removed";
                 } else {
                     statement = connection.prepareStatement("DELETE FROM album_music WHERE album_id = ? AND music_id = ?");
-                    statement.setString(1, albumId);
-                    statement.setString(2, musicId);
+                    statement.setString(1, String.valueOf(albumId));
+                    statement.setString(2, String.valueOf(musicId));
 
                     int rowsDeleted = statement.executeUpdate();
 
@@ -190,20 +188,20 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
     }
 
     @Override
-    public boolean removeAlbum(String albumId) throws RemoteException {
+    public boolean removeAlbum(int albumId) throws RemoteException {
         boolean result = false;
 
         connection = databaseManager.connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM album_music WHERE album_id = ?");
-            statement.setString(1, albumId);
+            statement.setString(1, String.valueOf(albumId));
 
             int rowsDeleted = statement.executeUpdate();
 
             if (rowsDeleted >= 0) {
                 statement = connection.prepareStatement("DELETE FROM albums WHERE album_id = ?");
-                statement.setString(1, albumId);
+                statement.setString(1, String.valueOf(albumId));
 
                 rowsDeleted = statement.executeUpdate();
 

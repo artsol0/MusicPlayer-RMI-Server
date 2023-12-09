@@ -3,17 +3,17 @@ package com.artsolo.musicplayer.entitis;
 import java.io.Serializable;
 
 public class Music implements Serializable {
-    private final Long id;
+    private final int id;
     private final String title;
     private final String performer;
 
-    public Music(Long id, String title, String performer) {
+    public Music(int id, String title, String performer) {
         this.id = id;
         this.title = title;
         this.performer = performer;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
