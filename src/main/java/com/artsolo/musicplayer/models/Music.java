@@ -1,4 +1,4 @@
-package com.artsolo.musicplayer.entitis;
+package com.artsolo.musicplayer.models;
 
 import java.io.Serializable;
 

@@ -1,7 +1,7 @@
 package com.artsolo.musicplayer.services;
 
-import com.artsolo.musicplayer.entitis.Album;
-import com.artsolo.musicplayer.entitis.Music;
+import com.artsolo.musicplayer.models.Album;
+import com.artsolo.musicplayer.models.Music;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

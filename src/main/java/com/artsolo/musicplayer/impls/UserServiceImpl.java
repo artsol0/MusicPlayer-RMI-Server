@@ -1,29 +1,21 @@
 package com.artsolo.musicplayer.impls;
 
-import com.artsolo.musicplayer.DatabaseManager;
 import com.artsolo.musicplayer.JsonManager;
-import com.artsolo.musicplayer.entitis.User;
+import com.artsolo.musicplayer.models.User;
 import com.artsolo.musicplayer.services.UserService;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class UserServiceImpl extends UnicastRemoteObject implements UserService {
-
-    private Connection connection;
-    private final DatabaseManager databaseManager;
     private final JsonManager jsonManager = new JsonManager();
-    private final Logger logger = Logger.getLogger(DatabaseManager.class.getName());
+    private final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     public UserServiceImpl() throws RemoteException {
         super();
-        databaseManager = new DatabaseManager();
     }
 
     @Override
@@ -32,9 +24,9 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
         String username = loginData[0];
         String password = loginData[1];
 
-        connection = databaseManager.connect();
+        Connection connection = connect();
 
-        if (userIsValid(username, password)) {
+        if (userIsValid(username, password, connection)) {
             try {
                 PreparedStatement statement = connection.prepareStatement("SELECT user_id FROM users WHERE username = ?");
                 statement.setString(1, username);
@@ -42,15 +34,17 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
 
+                    User user = new User(resultSet.getInt("user_id"), username);
+
                     statement.close();
                     resultSet.close();
                     connection.close();
 
-                    return new User(resultSet.getInt("user_id"), username);
+                    return user;
                 }
 
             } catch (SQLException e) {
-                logger.log(Level.WARNING, "Error in login user.");
+                e.printStackTrace();
             }
         }
 
@@ -64,7 +58,7 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
         String email = registerData[1];
         String password = registerData[2];
 
-        connection = databaseManager.connect();
+        Connection connection = connect();
 
         if (usernameIsTaken(username, connection)) {
             return "Username is already taken";
@@ -93,10 +87,8 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
         return "Something went wrong. Try again latter";
     }
 
-    private boolean userIsValid(String username, String password) {
+    private boolean userIsValid(String username, String password, Connection connection) {
         boolean valid = false;
-
-        connection = databaseManager.connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM users WHERE username = ? AND password = ?");
@@ -111,7 +103,6 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
 
             statement.close();
             resultSet.close();
-            connection.close();
 
         } catch (SQLException e) {
             logger.log(Level.WARNING, "Error in validation user.");
@@ -154,5 +145,16 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
             logger.log(Level.WARNING, "Error checking for email.");
         }
         return false;
+    }
+
+    private Connection connect() {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer","root","p00rGe()n");
+        } catch (ClassNotFoundException | SQLException e) {
+            logger.log(Level.WARNING, "The connection was not established");
+        }
+        return connection;
     }
 }

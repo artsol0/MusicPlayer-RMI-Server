@@ -1,7 +1,6 @@
 package com.artsolo.musicplayer.impls;
 
-import com.artsolo.musicplayer.DatabaseManager;
-import com.artsolo.musicplayer.entitis.Music;
+import com.artsolo.musicplayer.models.Music;
 import com.artsolo.musicplayer.services.MusicService;
 
 import java.io.IOException;
@@ -17,21 +16,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MusicServiceImpl extends UnicastRemoteObject implements MusicService {
-
-    private Connection connection;
-    private final DatabaseManager databaseManager;
-    private final Logger logger = Logger.getLogger(DatabaseManager.class.getName());
+    private final Logger logger = Logger.getLogger(MusicServiceImpl.class.getName());
 
     public MusicServiceImpl() throws RemoteException {
         super();
-        databaseManager = new DatabaseManager();
     }
 
     @Override
     public List<Music> getMusic(int userId) throws RemoteException {
         List<Music> musicList = new ArrayList<>();
 
-        connection = databaseManager.connect();
+        Connection connection = connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT music.music_id, music.title, performers.performername FROM liked JOIN music ON liked.music_id = music.music_id JOIN performers ON music.performer_id = performers.performer_id WHERE liked.user_id = ?");
@@ -57,7 +52,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
     public List<Music> getMusicByGenre(int genreId) throws RemoteException {
         List<Music> musicList = new ArrayList<>();
 
-        connection = databaseManager.connect();
+        Connection connection = connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT music_id, music.title, performers.performername FROM music JOIN performers ON music.performer_id = performers.performer_id WHERE genre_id = ?");
@@ -83,7 +78,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
     public List<Music> getMusicByString(String searchString) throws RemoteException {
         List<Music>musicList = new ArrayList<>();
 
-        connection = databaseManager.connect();
+        Connection connection = connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT music_id, music.title, performers.performername FROM music JOIN performers ON music.performer_id = performers.performer_id WHERE title LIKE ? OR performername LIKE ?");
@@ -111,7 +106,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
     public List<Music> likedSearch(String searchString) throws RemoteException {
         List<Music> musicList = new ArrayList<>();
 
-        connection = databaseManager.connect();
+        Connection connection = connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT music.music_id, music.title, performers.performername FROM liked JOIN music ON liked.music_id = music.music_id JOIN performers ON music.performer_id = performers.performer_id WHERE title LIKE ? OR performername LIKE ?");
@@ -140,7 +135,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
     public byte[] getMusicInBytes(int musicId) throws RemoteException {
         byte[] data = null;
 
-        connection = databaseManager.connect();
+        Connection connection = connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT path FROM music WHERE music_id = ?");
@@ -171,7 +166,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
     public String addMusicToLiked(int musicId, int userId) throws RemoteException {
         String result = null;
 
-        connection = databaseManager.connect();
+        Connection connection = connect();
 
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM liked WHERE user_id = ? AND music_id = ?");
@@ -213,7 +208,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
     public String removeMusicFromLiked(int musicId, int userId) throws RemoteException {
         String result = null;
 
-        connection = databaseManager.connect();
+        Connection connection = connect();
 
         try {
 
@@ -250,5 +245,16 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
         }
 
         return result;
+    }
+
+    private Connection connect() {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/MusicPlayer","root","p00rGe()n");
+        } catch (ClassNotFoundException | SQLException e) {
+            logger.log(Level.WARNING, "The connection was not established");
+        }
+        return connection;
     }
 }
