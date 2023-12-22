@@ -106,6 +106,7 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
             statement.close();
             connection.close();
         } catch (SQLException e) {
+            e.printStackTrace();
             logger.log(Level.WARNING, "Error while adding music to album.");
         }
 
@@ -125,7 +126,7 @@ public class AlbumServiceImpl extends UnicastRemoteObject implements AlbumServic
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
+                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performername"));
                 musicList.add(music);
             }
 

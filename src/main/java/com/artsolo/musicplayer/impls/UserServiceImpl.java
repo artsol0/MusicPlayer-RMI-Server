@@ -44,7 +44,7 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.log(Level.WARNING, "Error in new user login.");
             }
         }
 

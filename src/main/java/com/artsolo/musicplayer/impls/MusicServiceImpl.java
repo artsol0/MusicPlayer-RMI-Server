@@ -34,7 +34,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
+                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performername"));
                 musicList.add(music);
             }
 
@@ -60,7 +60,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
+                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performername"));
                 musicList.add(music);
             }
 
@@ -69,6 +69,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
             connection.close();
         } catch (SQLException e) {
             logger.log(Level.WARNING, "Error in listing music.");
+            e.printStackTrace();
         }
 
         return musicList;
@@ -88,7 +89,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
+                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performername"));
                 musicList.add(music);
             }
 
@@ -116,7 +117,7 @@ public class MusicServiceImpl extends UnicastRemoteObject implements MusicServic
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performer"));
+                Music music = new Music(resultSet.getInt("music_id"), resultSet.getString("title"), resultSet.getString("performername"));
                 musicList.add(music);
             }
 
